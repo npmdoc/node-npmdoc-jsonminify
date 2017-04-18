@@ -1,0 +1,277 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/fkei/JSON.minify"
+
+    >jsonminify (v0.4.1)</a>
+</h1>
+<h4>JSON.minify() minifies blocks of JSON-like content into valid JSON by removing all whitespace *and* comments.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.jsonminify">module jsonminify</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.jsonminify.jsonminify">
+            function <span class="apidocSignatureSpan"></span>jsonminify
+            <span class="apidocSignatureSpan">(json)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.jsonminify.minify_json">
+            function <span class="apidocSignatureSpan">jsonminify.</span>minify_json
+            <span class="apidocSignatureSpan">(json)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.jsonminify.toString">
+            function <span class="apidocSignatureSpan">jsonminify.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.jsonminify.toString">module jsonminify.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.jsonminify.toString.toString">
+            function <span class="apidocSignatureSpan">jsonminify.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.jsonminify" id="apidoc.module.jsonminify">module jsonminify</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.jsonminify.jsonminify" id="apidoc.element.jsonminify.jsonminify">
+        function <span class="apidocSignatureSpan"></span>jsonminify
+        <span class="apidocSignatureSpan">(json)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">jsonminify = function (json) {
+
+    var tokenizer = /&#x22;|(\/\*)|(\*\/)|(\/\/)|\n|\r|\[|]/g,
+        in_string = false,
+        in_multiline_comment = false,
+        in_singleline_comment = false,
+        tmp, tmp2, new_str = [], ns = 0, from = 0, lc, rc
+    ;
+
+    tokenizer.lastIndex = 0;
+
+    while ( tmp = tokenizer.exec(json) ) {
+        lc = RegExp.leftContext;
+        rc = RegExp.rightContext;
+        if (!in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            tmp2 = lc.substring(from);
+            if (!in_string) {
+                tmp2 = tmp2.replace(/(\n|\r|\s)*/g,&#x22;&#x22;);
+            }
+            new_str[ns++] = tmp2;
+        }
+        from = tokenizer.lastIndex;
+
+        if (tmp[0] === &#x22;\&#x22;&#x22; &#x26;&#x26; !in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            tmp2 = lc.match(/(\\)*$/);
+            if (!in_string || !tmp2 || (tmp2[0].length % 2) === 0) {    // start of string with &#x22;, or unescaped &#x22; character found
+ to end string
+                in_string = !in_string;
+            }
+            from--; // include &#x22; character in next catch
+            rc = json.substring(from);
+        }
+        else if (tmp[0] === &#x22;/*&#x22; &#x26;&#x26; !in_string &#x26;&#x26; !in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            in_multiline_comment = true;
+        }
+        else if (tmp[0] === &#x22;*/&#x22; &#x26;&#x26; !in_string &#x26;&#x26; in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            in_multiline_comment = false;
+        }
+        else if (tmp[0] === &#x22;//&#x22; &#x26;&#x26; !in_string &#x26;&#x26; !in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            in_singleline_comment = true;
+        }
+        else if ((tmp[0] === &#x22;\n&#x22; || tmp[0] === &#x22;\r&#x22;) &#x26;&#x26; !in_string &#x26;&#x26; !in_multiline_comment &#x26;&#x26; in_singleline_comment) {
+            in_singleline_comment = false;
+        }
+        else if (!in_multiline_comment &#x26;&#x26; !in_singleline_comment &#x26;&#x26; !(/\n|\r|\s/.test(tmp[0]))) {
+            new_str[ns++] = tmp[0];
+        }
+    }
+    new_str[ns++] = rc;
+    return new_str.join(&#x22;&#x22;);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.jsonminify.minify_json" id="apidoc.element.jsonminify.minify_json">
+        function <span class="apidocSignatureSpan">jsonminify.</span>minify_json
+        <span class="apidocSignatureSpan">(json)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">minify_json = function (json) {
+
+    var tokenizer = /&#x22;|(\/\*)|(\*\/)|(\/\/)|\n|\r|\[|]/g,
+        in_string = false,
+        in_multiline_comment = false,
+        in_singleline_comment = false,
+        tmp, tmp2, new_str = [], ns = 0, from = 0, lc, rc
+    ;
+
+    tokenizer.lastIndex = 0;
+
+    while ( tmp = tokenizer.exec(json) ) {
+        lc = RegExp.leftContext;
+        rc = RegExp.rightContext;
+        if (!in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            tmp2 = lc.substring(from);
+            if (!in_string) {
+                tmp2 = tmp2.replace(/(\n|\r|\s)*/g,&#x22;&#x22;);
+            }
+            new_str[ns++] = tmp2;
+        }
+        from = tokenizer.lastIndex;
+
+        if (tmp[0] === &#x22;\&#x22;&#x22; &#x26;&#x26; !in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            tmp2 = lc.match(/(\\)*$/);
+            if (!in_string || !tmp2 || (tmp2[0].length % 2) === 0) {    // start of string with &#x22;, or unescaped &#x22; character found
+ to end string
+                in_string = !in_string;
+            }
+            from--; // include &#x22; character in next catch
+            rc = json.substring(from);
+        }
+        else if (tmp[0] === &#x22;/*&#x22; &#x26;&#x26; !in_string &#x26;&#x26; !in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            in_multiline_comment = true;
+        }
+        else if (tmp[0] === &#x22;*/&#x22; &#x26;&#x26; !in_string &#x26;&#x26; in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            in_multiline_comment = false;
+        }
+        else if (tmp[0] === &#x22;//&#x22; &#x26;&#x26; !in_string &#x26;&#x26; !in_multiline_comment &#x26;&#x26; !in_singleline_comment) {
+            in_singleline_comment = true;
+        }
+        else if ((tmp[0] === &#x22;\n&#x22; || tmp[0] === &#x22;\r&#x22;) &#x26;&#x26; !in_string &#x26;&#x26; !in_multiline_comment &#x26;&#x26; in_singleline_comment) {
+            in_singleline_comment = false;
+        }
+        else if (!in_multiline_comment &#x26;&#x26; !in_singleline_comment &#x26;&#x26; !(/\n|\r|\s/.test(tmp[0]))) {
+            new_str[ns++] = tmp[0];
+        }
+    }
+    new_str[ns++] = rc;
+    return new_str.join(&#x22;&#x22;);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.jsonminify.toString" id="apidoc.element.jsonminify.toString">
+        function <span class="apidocSignatureSpan">jsonminify.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.jsonminify.toString" id="apidoc.module.jsonminify.toString">module jsonminify.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.jsonminify.toString.toString" id="apidoc.element.jsonminify.toString.toString">
+        function <span class="apidocSignatureSpan">jsonminify.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
