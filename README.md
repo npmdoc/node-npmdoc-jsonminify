@@ -1,4 +1,7 @@
-# api documentation for  [jsonminify (v0.4.1)](https://github.com/fkei/JSON.minify)  [![npm package](https://img.shields.io/npm/v/npmdoc-jsonminify.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-jsonminify) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-jsonminify.svg)](https://travis-ci.org/npmdoc/node-npmdoc-jsonminify)
+# npmdoc-jsonminify
+
+#### api documentation for  [jsonminify (v0.4.1)](https://github.com/fkei/JSON.minify)  [![npm package](https://img.shields.io/npm/v/npmdoc-jsonminify.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-jsonminify) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-jsonminify.svg)](https://travis-ci.org/npmdoc/node-npmdoc-jsonminify)
+
 #### JSON.minify() minifies blocks of JSON-like content into valid JSON by removing all whitespace *and* comments.
 
 [![NPM](https://nodei.co/npm/jsonminify.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/jsonminify)
